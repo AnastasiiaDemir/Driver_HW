@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.2'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.2'
+    implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.1.1'
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.1.3'
+    implementation group: 'org.aeonbits.owner', name: 'owner', version: '1.0.12'
+}
+
+test {
+    useJUnitPlatform()
+}
