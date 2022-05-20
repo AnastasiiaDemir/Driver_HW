@@ -16,19 +16,15 @@ import java.util.List;
 import java.util.Set;
 
 
-public class firstTest {
+public class FirstTest {
 
-    private Logger logger = LogManager.getLogger(firstTest.class);
-    WebDriver driver;
+    private Logger logger = LogManager.getLogger(FirstTest.class);
+    private WebDriver driver;
     private ConfigServer cfg = ConfigFactory.create(ConfigServer.class);
 
     @Before
     public void setUp() {
         WebDriverManager.chromedriver().setup();
-        ChromeOptions option = new ChromeOptions();
-        option.addArguments("headless");
-        driver = new ChromeDriver(option);
-        logger.info("Драйвер поднят");
     }
 
     @After
@@ -45,30 +41,25 @@ public class firstTest {
         String locatorButton = "//input[@id = 'search_button_homepage']";
         String locatorFirstResult = "(//a[@data-testid='result-title-a'])[1]//span[contains(text(),'Онлайн‑курсы для профессионалов, дистанционное обучение')]";
 
-        driver.quit();
-
         ChromeOptions option = new ChromeOptions();
         option.addArguments("headless");
         driver = new ChromeDriver(option);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
         driver.get(cfg.duckUrl());
         logger.info("Открыли https://duckduckgo.com/ в headless режиме");
         driver.findElement(By.xpath(locatorLine)).sendKeys(otus);
         logger.info("В поисковую строку ввели ОТУС");
         driver.findElement(By.xpath(locatorButton)).click();
-        Assert.assertNotNull(driver.findElement(By.xpath(locatorFirstResult)));
+        Assert.assertTrue(driver.findElement(By.xpath(locatorFirstResult)).isDisplayed());
         logger.info("Первый результат поисковой выдачи содержит \"Онлайн‑курсы для профессионалов, дистанционное обучение...\"");
     }
 
     @Test
     public void openDemo() throws InterruptedException {
 
-        String locatorModalWindow = "//div[@class='pp_hoverContainer']";
+        String locatorModalWindow = "//a[@class='pp_expand']";
         String locatorPictures = "//span[@class='image-block']";
-        String locatorCloseButton = "//a[@class='pp_close']";
 
-        driver.quit();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--kiosk");
         options.addArguments("--incognito");
@@ -77,7 +68,7 @@ public class firstTest {
 
         driver.get(cfg.demoUrl());
         logger.info("Открыли demo.w3layouts.com/..");
-        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(30));
 
         List<WebElement> elements = driver.findElements(By.xpath(locatorPictures));
         int index = (int) ((Math.random() * elements.size()) - 1); //получаем индекс рандомной картинки
@@ -86,15 +77,15 @@ public class firstTest {
         System.out.println("Number of elements:" +elements.size());
 
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", wait.until(ExpectedConditions.elementToBeClickable(elements.get(index))));
-        Thread.sleep(1000);
+        Thread.sleep(1000); //если убрать, то тест периодически ломается
         wait.until(ExpectedConditions.elementToBeClickable(elements.get(index))).click();
-
-        driver.findElement(By.xpath(locatorModalWindow));
+        Assert.assertTrue(wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(locatorModalWindow))).isEnabled());
         logger.info("Получили элемент, содержащий признак модального окна");
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(locatorCloseButton))).click();
+
+/*      wait.until(ExpectedConditions.elementToBeClickable(By.xpath(locatorCloseButton))).click();
         logger.info("Закрыли модальное окно");
         Assert.assertTrue(wait.until(ExpectedConditions.stalenessOf(driver.findElement(By.xpath(locatorModalWindow)))));
-        logger.info("Проверили, что модальное окно пропало из дома. Прошла проверка на открытие картинки в модальном окне");
+        logger.info("Проверили, что модальное окно пропало из дома. Прошла проверка на открытие картинки в модальном окне");*/
     }
 
     @Test
@@ -104,32 +95,33 @@ public class firstTest {
         String fieldPassword = "//div[@class = 'new-input-line new-input-line_slim new-input-line_relative']/input[@type='password']";
         String buttonToComeIn = "//button[@class='new-button new-button_full new-button_blue new-button_md']";
 
-        driver.quit();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("start-maximized");
-        options.addArguments("--incognito");
         driver = new ChromeDriver(options);
         driver.get(cfg.otusUrl());
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         //нажать на кнопку Вход
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(buttonEntrance))).click();
+        driver.findElement(By.xpath(buttonEntrance)).click();
+        // wait.until(ExpectedConditions.elementToBeClickable(By.xpath(buttonEntrance))).click();
         //заполнить поле Электронная почта
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(fieldEmail))).sendKeys(cfg.email());
         //заполнить поле Введите пароль
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(fieldPassword))).sendKeys(cfg.password());
+        driver.findElement(By.xpath(fieldPassword)).sendKeys(cfg.password());
         //нажать на кнопку Войти
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(buttonToComeIn))).click();
+        driver.findElement(By.xpath(buttonToComeIn)).click();
         logger.info("Успешная авторизация");
         cookie();
         }
 
     public void cookie(){
         Set<Cookie> cookies = driver.manage().getCookies();
-        logger.info("Вывод все кук"+cookies);
+        logger.info("Вывод кук:");
+        for(Cookie cookie:cookies){
+        logger.info(cookie);
+        }
     }
 }
-
 
 
 
