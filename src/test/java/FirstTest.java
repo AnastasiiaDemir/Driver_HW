@@ -91,9 +91,9 @@ public class FirstTest {
     @Test
     public void otusAvtoriz(){
         String buttonEntrance = "//button[@data-modal-id='new-log-reg']";
-        String fieldEmail = "//div[@class = 'new-input-line new-input-line_slim new-input-line_relative']/input[@type='text'][@name = 'email']";
-        String fieldPassword = "//div[@class = 'new-input-line new-input-line_slim new-input-line_relative']/input[@type='password']";
-        String buttonToComeIn = "//button[@class='new-button new-button_full new-button_blue new-button_md']";
+        String fieldEmail = "//input[@type='text'][@name = 'email'][@placeholder='Электронная почта']";
+        String fieldPassword = "//input[@type='password'][@placeholder='Введите пароль']";
+        String buttonToComeIn = "//div[contains(@class,\"new-input-line_last\")]/button[contains(text(), \"Войти\")]";
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("start-maximized");
