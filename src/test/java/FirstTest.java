@@ -81,11 +81,6 @@ public class FirstTest {
         wait.until(ExpectedConditions.elementToBeClickable(elements.get(index))).click();
         Assert.assertTrue(wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(locatorModalWindow))).isEnabled());
         logger.info("Получили элемент, содержащий признак модального окна");
-
-/*      wait.until(ExpectedConditions.elementToBeClickable(By.xpath(locatorCloseButton))).click();
-        logger.info("Закрыли модальное окно");
-        Assert.assertTrue(wait.until(ExpectedConditions.stalenessOf(driver.findElement(By.xpath(locatorModalWindow)))));
-        logger.info("Проверили, что модальное окно пропало из дома. Прошла проверка на открытие картинки в модальном окне");*/
     }
 
     @Test
